@@ -1,4 +1,3 @@
-// App.js - Componente principal de React con enrutamiento
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
@@ -11,14 +10,11 @@ import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { AppProvider } from './context/Context';
-
-// Importar los estilos de Bootstrap y los estilos globales
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/global.css'; 
 
 function App() {
     return (
-        // El proveedor de contexto envuelve toda la aplicación
         <AppProvider>
             <Router>
                 <div className="d-flex flex-column min-vh-100 bg-black">
@@ -32,7 +28,6 @@ function App() {
                             <Route path="/carrito" element={<Cart />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
-                            {/* Ruta de fallback para 404 */}
                             <Route path="*" element={<main className="container my-5 text-center text-danger"><h2>404: Página no encontrada</h2></main>} />
                         </Routes>
                     </div>

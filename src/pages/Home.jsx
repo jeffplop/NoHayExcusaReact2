@@ -1,15 +1,13 @@
-// Home Page (INDEX.html)
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-    // Estilos para simular el hero (adaptados de style.css)
     const heroStyle = {
         textAlign: 'center',
         padding: '6rem 2rem',
         backgroundColor: '#222',
         color: '#fff',
-        backgroundImage: `url(${process.env.PUBLIC_URL}/images/hero_banner.jpg)`,
+        backgroundImage: `url(${process.env.PUBLIC_URL}/images/banner.jpg)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',

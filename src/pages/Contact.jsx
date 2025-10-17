@@ -1,4 +1,3 @@
-// Contact Page (contacto.html)
 import React, { useState } from 'react';
 
 const Contact = () => {
@@ -14,7 +13,6 @@ const Contact = () => {
         const newErrors = {};
         let valid = true;
         
-        // Lógica de validación adaptada de js/main.js
         if (!formData.name) {
             newErrors.name = 'El nombre es requerido.';
             valid = false;
@@ -53,14 +51,11 @@ const Contact = () => {
         e.preventDefault();
         
         if (validateForm()) {
-            // Simulación de envío de formulario (igual que en js/main.js)
             setSuccessMessage('¡Mensaje enviado con éxito!');
             setFormData({ name: '', email: '', message: '' });
             setTimeout(() => setSuccessMessage(''), 3000);
         }
     };
-    
-    // Estilo para el contenedor del formulario (adaptado de style.css)
     const formContainerStyle = {
         maxWidth: '500px',
         margin: '2rem auto',

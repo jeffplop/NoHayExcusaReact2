@@ -1,8 +1,6 @@
-// Footer Component
 import React from 'react';
 
 const Footer = () => {
-    // Estilos internos adaptados del CSS original
     const footerStyle = {
         textAlign: 'center',
         padding: '1.5rem',

@@ -1,4 +1,3 @@
-// Login Page (login.html)
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/Context';
@@ -9,8 +8,6 @@ const Login = () => {
     const [message, setMessage] = useState({ text: '', type: '' });
     const { handleLogin, isAuthenticated } = useAppContext();
     const navigate = useNavigate();
-
-    // Redirigir si ya está autenticado
     if (isAuthenticated) {
         navigate('/');
         return null;
@@ -34,12 +31,9 @@ const Login = () => {
                 navigate('/');
             }, 1000);
         } else {
-            // El mensaje de error viene del backend (ej: 'Credenciales incorrectas.')
             setMessage({ text: result.message, type: 'error' });
         }
     };
-
-    // Estilo para el contenedor del formulario (adaptado de style.css)
     const formContainerStyle = {
         maxWidth: '500px',
         margin: '2rem auto',

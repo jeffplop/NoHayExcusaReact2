@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "titulo": "Implementación del Portafolio Personal en NOHAYEXCUSA.CL",
+    "fecha": "14 de Octubre de 2025",
+    "contenido_breve": "Finalización de la integración de la sección de Portafolio dentro de la página 'About Us', demostrando componentes personalizados y responsividad con Bootstrap."
+  },
+  {
+    "id": 2,
+    "titulo": "Pruebas Unitarias para Componentes Críticos: Avance en IL2.2",
+    "fecha": "12 de Octubre de 2025",
+    "contenido_breve": "Primeras pruebas implementadas con Jasmine y Karma, verificando el montaje correcto del componente principal y la carga asíncrona de datos desde el JSON local."
+  },
+  {
+    "id": 3,
+    "titulo": "Presentación del E-commerce NOHAYEXCUSA.CL",
+    "fecha": "20 de Septiembre de 2025",
+    "contenido_breve": "NOHAYEXCUSA.CL se lanza con éxito, cubriendo autenticación, gestión de carrito y persistencia de datos en `localStorage`."
+  }
+]

@@ -1,46 +1,95 @@
-// About Us Page (nosotros.html)
-import React from 'react';
+import React, { useState } from 'react'; 
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import newsData from '../data/news.json'; 
+
+const ProjectCard = ({ title, description, techs, demoLink }) => (
+    <Card className="mb-4 h-100 shadow-sm" bg="dark" text="white" border="danger">
+        <Card.Body>
+            <Card.Title>{title}</Card.Title>
+            <Card.Text>{description}</Card.Text>
+        </Card.Body>
+        <Card.Footer className="bg-secondary text-white-50">
+            <small>Tecnologías: {techs}</small>
+            <Button variant="outline-light" size="sm" href={demoLink} target="_blank" className="float-end">
+                Ver
+            </Button>
+        </Card.Footer>
+    </Card>
+);
+
+const NewsItem = ({ title, date, content }) => (
+    <div className="mb-4 p-3 border-start border-4 border-danger bg-light text-dark shadow-sm">
+        <h5>{title}</h5>
+        <p className="text-muted small mb-1">{date}</p>
+        <p>{content}</p>
+    </div>
+);
 
 const AboutUs = () => {
-    // Estilos para simular el miembro del equipo
-    const memberStyle = {
-        backgroundColor: '#333',
-        color: '#fff',
-        padding: '2rem',
-        borderRadius: '10px',
-        flex: '1 1 250px',
-        textAlign: 'center',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
-    };
-
-    const avatarStyle = {
-        width: '150px',
-        height: '150px',
-        borderRadius: '50%',
-        objectFit: 'cover',
-        marginBottom: '1rem',
-        border: '3px solid #e53935'
-    };
-    
-    // URL del placeholder adaptado
-    const placeholderUrl = "https://placehold.co/150x150/e53935/ffffff?text=AVATAR";
+    const [news] = useState(newsData); 
+    const projects = [
+        {
+            id: 1,
+            title: 'NOHAYEXCUSA.CL (E-commerce)',
+            description: 'Plataforma de comercio electrónico con autenticación y carrito persistente.',
+            techs: 'React, Node.js (Express), Bootstrap',
+            demoLink: '#' 
+        },
+        {
+            id: 2,
+            title: 'Sistema de Gestión de Clientes',
+            description: 'Aplicación Single Page Application (SPA) para la administración de usuarios y facturas.',
+            techs: 'React, Axios, Context API',
+            demoLink: '#'
+        },
+        {
+            id: 3,
+            title: 'Landing Page Responsiva',
+            description: 'Diseño 100% responsivo para marketing digital, optimizado para móvil.',
+            techs: 'HTML5, CSS3 (Grid/Flexbox), JavaScript',
+            demoLink: '#'
+        }
+    ];
 
     return (
         <main>
-            <section id="nosotros" className="container my-5 text-center">
-                <h2 className="text-danger">Quiénes Somos</h2>
-                <p className="text-white-50 fs-5 mb-5">
-                    En No Hay Excusa, creemos que la transformación personal comienza con el primer paso. Somos un equipo apasionado de entusiastas del fitness, nutricionistas y desarrolladores dedicados a crear una plataforma que no solo ofrece productos y rutinas, sino que inspira un cambio real y duradero en tu vida.
-                </p>
-                
-                <div className="d-flex flex-wrap justify-content-center gap-4 mt-4">
-                    <div className="team-member" style={memberStyle}>
-                        <img src={placeholderUrl} alt="Avatar del desarrollador" style={avatarStyle} />
-                        <h3 className="text-white">Ricardo Solís</h3>
-                        <p className="text-danger fw-bold">Desarrollador y Fundador</p>
-                    </div>
-                </div>
-            </section>
+            <Container className="my-5 text-white">
+                <Row className="text-center mb-5 p-5 bg-dark rounded shadow-lg">
+                    <Col>
+                        <img 
+                            src="/images/person.png" 
+                            alt="Foto del Estudiante" 
+                            className="rounded-circle mb-3 border border-danger border-4" 
+                            style={{ width: '150px', height: '150px', objectFit: 'cover' }} 
+                        />
+                        <h1 className="display-4 text-danger">¡Hola Soy Jeff!</h1>
+                        <p className="lead">
+                            Estudiante de Ingenería en Informatica | Me gusta arruinar mi felicidad y vivir con angustía
+                        </p>
+                    </Col>
+                </Row>
+                <h2 className="text-danger mb-4">Proyectos Destacados</h2>
+                <Row xs={1} md={2} lg={3} className="g-4">
+                    {projects.map(project => (
+                        <Col key={project.id}>
+                            <ProjectCard {...project} />
+                        </Col>
+                    ))}
+                </Row>
+                <h2 className="text-danger mt-5 mb-4">Noticias de Desarrollo</h2>
+                <Row>
+                    <Col md={8} className="mx-auto">
+                        {news.map(item => (
+                            <NewsItem 
+                                key={item.id} 
+                                title={item.titulo} 
+                                date={item.fecha} 
+                                content={item.contenido_breve} 
+                            />
+                        ))}
+                    </Col>
+                </Row>
+            </Container>
         </main>
     );
 };

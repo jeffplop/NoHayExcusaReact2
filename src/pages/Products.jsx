@@ -1,10 +1,9 @@
-// Products Page (productos.html)
 import React, { useState, useEffect } from 'react';
 import { getProducts } from '../services/api';
 import { useAppContext } from '../context/Context';
 
 const ProductCard = ({ product, onAddToCart }) => {
-    const imgPath = `${process.env.PUBLIC_URL}/${product.imagen}`;
+    const imgPath = product.imagen; 
 
     return (
         <div className="card text-white bg-dark p-3 shadow-lg" style={{ borderRadius: '8px', flex: '1 1 250px' }}>
@@ -53,7 +52,7 @@ const Products = () => {
         const result = await handleAddToCart(id);
         if (result.message) {
             setMessage(`"${nombre}" ha sido añadido al carrito.`);
-            setTimeout(() => setMessage(''), 2000); // Ocultar mensaje después de 2s
+            setTimeout(() => setMessage(''), 2000);
         }
     };
 

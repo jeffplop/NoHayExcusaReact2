@@ -1,4 +1,3 @@
-// Header Component (Navegación)
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,13 +10,11 @@ const Header = () => {
 
     const onLogout = () => {
         handleLogout();
-        navigate('/'); // Redirigir al inicio después de cerrar sesión
+        navigate('/');
     };
 
-    // Adaptación del logo
     const logoPath = `${process.env.PUBLIC_URL}/images/logo.jpg`;
 
-    // Estilos internos adaptados del CSS original, pero usando clases de Bootstrap para responsive
     const navStyle = {
         backgroundColor: '#000',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',

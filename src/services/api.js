@@ -1,98 +1,124 @@
-// Archivo de Servicios API para el Frontend
-import axios from 'axios';
+const LOCAL_PRODUCTS = [
+    { id: 1, nombre: "Proteína en Polvo", precio: 25000, imagen: "/images/protein.jpg" }, 
+    { id: 2, nombre: "Bandas de Resistencia", precio: 15000, imagen: "/images/banda.jpg" },
+    { id: 3, nombre: "Mancuernas Ajustables", precio: 50000, imagen: "/images/mancuernas.jpg" },
+    { id: 4, nombre: "Ropa Deportiva", precio: 30000, imagen: "/images/ropa.jpg" }
+];
 
-// La URL base apunta al servidor de Node.js/Express
-const API_URL = 'http://localhost:3001/api';
+const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 300)); 
 
-// ------------------------------------------------------------------------
-// Funciones de Autenticación
-// ------------------------------------------------------------------------
+const getLocalData = (key, defaultValue = {}) => {
+    try {
+        return JSON.parse(localStorage.getItem(key)) || defaultValue;
+    } catch {
+        return defaultValue;
+    }
+};
 
-/**
- * Registra un nuevo usuario enviando los datos al backend.
- * @param {object} userData - Datos del usuario para el registro.
- */
+const setLocalData = (key, data) => {
+    localStorage.setItem(key, JSON.stringify(data));
+};
+
 export const registerUser = async (userData) => {
-    try {
-        const response = await axios.post(`${API_URL}/register`, userData);
-        return response.data;
-    } catch (error) {
-        return error.response.data;
+    await simulateDelay();
+    let users = getLocalData('users', {});
+
+    if (users[userData.email]) {
+        return { success: false, message: "El correo electrónico ya está registrado." };
     }
+
+    users[userData.email] = userData;
+    setLocalData('users', users);
+
+    return { success: true, message: "Registro exitoso.", user: { email: userData.email } };
 };
 
-/**
- * Inicia sesión enviando credenciales al backend.
- * @param {string} email - Correo del usuario.
- * @param {string} password - Contraseña del usuario.
- */
 export const loginUser = async (email, password) => {
-    try {
-        const response = await axios.post(`${API_URL}/login`, { email, password });
-        // Guardamos el token y el email en localStorage (CORRECCIÓN DE SEGURIDAD: Solo se guarda el token JWT, no la contraseña)
-        localStorage.setItem('authToken', response.data.token);
-        localStorage.setItem('userEmail', response.data.user.email);
-        return response.data;
-    } catch (error) {
-        return error.response.data;
+    await simulateDelay();
+    const users = getLocalData('users', {});
+    const user = users[email];
+
+    if (user && user.password === password) {
+        localStorage.setItem('authToken', 'local_token'); 
+        localStorage.setItem('userEmail', email);
+
+        return { success: true, message: "Inicio de sesión exitoso.", user: { email } };
+    } else {
+        return { success: false, message: "Credenciales incorrectas." };
     }
 };
 
-// ------------------------------------------------------------------------
-// Funciones de Carrito y Productos
-// ------------------------------------------------------------------------
-
-// Función utilitaria para obtener la configuración con el email del usuario (simulando autenticación)
-const getConfig = () => ({
-    headers: {
-        // En un proyecto real, se enviaría el token JWT. Aquí enviamos el email como header
-        // para que el backend pueda rastrear el carrito simulado.
-        'X-User-Email': localStorage.getItem('userEmail') || 'guest'
-    }
-});
-
-/**
- * Obtiene la lista de productos del backend.
- */
 export const getProducts = async () => {
-    const response = await axios.get(`${API_URL}/products`);
-    return response.data;
+    await simulateDelay();
+    return LOCAL_PRODUCTS;
 };
 
-/**
- * Obtiene el carrito del usuario.
- */
 export const getCart = async () => {
-    const response = await axios.get(`${API_URL}/cart`, getConfig());
-    return response.data;
+    await simulateDelay();
+    const currentUserEmail = localStorage.getItem('userEmail') || 'guest';
+    const carts = getLocalData('carts', {});
+    const localCart = carts[currentUserEmail] || [];
+
+    const enrichedCart = localCart.map(cartItem => {
+        const productDetails = LOCAL_PRODUCTS.find(p => p.id === cartItem.id);
+        
+        if (productDetails) {
+            return {
+                ...productDetails, 
+                cantidad: cartItem.cantidad,
+            };
+        }
+        return null;
+    }).filter(item => item !== null);
+
+    return enrichedCart;
 };
 
-/**
- * Añade un producto al carrito.
- * @param {number} productId - ID del producto a añadir.
- */
 export const addToCart = async (productId) => {
-    const response = await axios.post(`${API_URL}/cart/add`, { productId }, getConfig());
-    return response.data;
-};
+    await simulateDelay();
+    const currentUserEmail = localStorage.getItem('userEmail') || 'guest';
+    let carts = getLocalData('carts', {});
+    let cart = carts[currentUserEmail] || [];
+    const product = LOCAL_PRODUCTS.find(p => p.id === productId);
 
-/**
- * Elimina un producto del carrito.
- * @param {number} productId - ID del producto a eliminar.
- */
-export const removeFromCart = async (productId) => {
-    const response = await axios.post(`${API_URL}/cart/remove`, { productId }, getConfig());
-    return response.data;
-};
-
-/**
- * Confirma la compra (checkout).
- */
-export const checkoutCart = async () => {
-    try {
-        const response = await axios.post(`${API_URL}/checkout`, {}, getConfig());
-        return response.data;
-    } catch (error) {
-        return error.response.data;
+    if (!product) {
+        return { success: false, message: "Producto no encontrado." };
     }
+
+    const itemIndex = cart.findIndex(item => item.id === productId);
+
+    if (itemIndex > -1) {
+        cart[itemIndex].cantidad += 1;
+    } else {
+        cart.push({ id: product.id, cantidad: 1 }); 
+    }
+
+    carts[currentUserEmail] = cart;
+    setLocalData('carts', carts);
+    return { success: true, message: "Producto añadido." };
+};
+
+export const removeFromCart = async (productId) => {
+    await simulateDelay();
+    const currentUserEmail = localStorage.getItem('userEmail') || 'guest';
+    let carts = getLocalData('carts', {});
+    let cart = carts[currentUserEmail] || [];
+
+    cart = cart.filter(item => item.id !== productId);
+
+    carts[currentUserEmail] = cart;
+    setLocalData('carts', carts);
+
+    return { success: true, message: "Producto eliminado.", cart };
+};
+
+export const checkoutCart = async () => {
+    await simulateDelay();
+    const currentUserEmail = localStorage.getItem('userEmail') || 'guest';
+    let carts = getLocalData('carts', {});
+
+    carts[currentUserEmail] = [];
+    setLocalData('carts', carts);
+
+    return { success: true, message: "Compra confirmada con éxito." };
 };

@@ -1,4 +1,3 @@
-// Register Page (register.html)
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../services/api';
@@ -18,14 +17,10 @@ const Register = () => {
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        // Limpiar error al escribir
         if (errors[e.target.name]) {
              setErrors({ ...errors, [e.target.name]: '' });
         }
     };
-    
-    // Función de validación de formulario (lógica ya adaptada en el backend)
-    // Aquí solo se validan campos requeridos antes de enviar
     const validateForm = () => {
         const newErrors = { ...initialErrors };
         let isValid = true;
@@ -53,8 +48,6 @@ const Register = () => {
         }
 
         setMessage({ text: 'Procesando registro...', type: 'info' });
-
-        // Enviar datos al Backend para validación y registro seguro
         const result = await registerUser(formData);
         
         if (result.success) {
@@ -65,14 +58,12 @@ const Register = () => {
                 navigate('/login');
             }, 1500);
         } else {
-            // Manejar errores de validación del Backend (ej: email ya registrado, menor de 18 años, etc.)
             const backendErrors = result.errors || {};
             setErrors(prev => ({...prev, ...backendErrors}));
             setMessage({ text: result.message || 'Error en el registro.', type: 'error' });
         }
     };
     
-    // Estilo para el contenedor del formulario (adaptado de style.css)
     const formContainerStyle = {
         maxWidth: '500px',
         margin: '2rem auto',
