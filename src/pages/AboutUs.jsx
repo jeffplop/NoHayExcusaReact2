@@ -37,16 +37,16 @@ const AboutUs = () => {
         },
         {
             id: 2,
-            title: 'Sistema de Gestión de Clientes',
-            description: 'Aplicación Single Page Application (SPA) para la administración de usuarios y facturas.',
-            techs: 'React, Axios, Context API',
+            title: 'Proyecto BMI',
+            description: 'Aplicación Buscador de Manuales de Indicadores de Pesaje',
+            techs: 'Android Studio, Kotlin',
             demoLink: '#'
         },
         {
             id: 3,
-            title: 'Landing Page Responsiva',
-            description: 'Diseño 100% responsivo para marketing digital, optimizado para móvil.',
-            techs: 'HTML5, CSS3 (Grid/Flexbox), JavaScript',
+            title: 'Indicador Bluetooth (PROXIMAMENTE)',
+            description: 'Una Aplicación para PC al respectivo LP7516B',
+            techs: 'Desconocido aún',
             demoLink: '#'
         }
     ];
@@ -57,7 +57,7 @@ const AboutUs = () => {
                 <Row className="text-center mb-5 p-5 bg-dark rounded shadow-lg">
                     <Col>
                         <img 
-                            src="/images/person.png" 
+                            src="/images/charlie.jpg" 
                             alt="Foto del Estudiante" 
                             className="rounded-circle mb-3 border border-danger border-4" 
                             style={{ width: '150px', height: '150px', objectFit: 'cover' }} 

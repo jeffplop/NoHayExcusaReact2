@@ -1,9 +1,4 @@
-const LOCAL_PRODUCTS = [
-    { id: 1, nombre: "Proteína en Polvo", precio: 25000, imagen: "/images/protein.jpg" }, 
-    { id: 2, nombre: "Bandas de Resistencia", precio: 15000, imagen: "/images/banda.jpg" },
-    { id: 3, nombre: "Mancuernas Ajustables", precio: 50000, imagen: "/images/mancuernas.jpg" },
-    { id: 4, nombre: "Ropa Deportiva", precio: 30000, imagen: "/images/ropa.jpg" }
-];
+import PRODUCTS_DATA from '../data/products.json';
 
 const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 300)); 
 
@@ -50,7 +45,7 @@ export const loginUser = async (email, password) => {
 
 export const getProducts = async () => {
     await simulateDelay();
-    return LOCAL_PRODUCTS;
+    return PRODUCTS_DATA;
 };
 
 export const getCart = async () => {
@@ -60,7 +55,7 @@ export const getCart = async () => {
     const localCart = carts[currentUserEmail] || [];
 
     const enrichedCart = localCart.map(cartItem => {
-        const productDetails = LOCAL_PRODUCTS.find(p => p.id === cartItem.id);
+        const productDetails = PRODUCTS_DATA.find(p => p.id === cartItem.id);
         
         if (productDetails) {
             return {
@@ -79,7 +74,7 @@ export const addToCart = async (productId) => {
     const currentUserEmail = localStorage.getItem('userEmail') || 'guest';
     let carts = getLocalData('carts', {});
     let cart = carts[currentUserEmail] || [];
-    const product = LOCAL_PRODUCTS.find(p => p.id === productId);
+    const product = PRODUCTS_DATA.find(p => p.id === productId);
 
     if (!product) {
         return { success: false, message: "Producto no encontrado." };

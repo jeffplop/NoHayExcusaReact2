@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
@@ -7,14 +7,12 @@ import { useAppContext } from '../context/Context';
 const Header = () => {
     const { isAuthenticated, currentUserEmail, totalItems, handleLogout } = useAppContext();
     const navigate = useNavigate();
-
+    const [isPulsing, setIsPulsing] = useState(false);
     const onLogout = () => {
         handleLogout();
         navigate('/');
     };
-
     const logoPath = `${process.env.PUBLIC_URL}/images/logo.jpg`;
-
     const navStyle = {
         backgroundColor: '#000',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -25,6 +23,14 @@ const Header = () => {
     const linkStyle = { color: '#fff', textDecoration: 'none', fontWeight: 500, transition: 'color 0.3s ease' };
     const linkHoverStyle = { color: '#e53935' };
     const logoStyle = { height: 'auto', width: '120px' };
+
+    useEffect(() => {
+        if (totalItems > 0) {
+            setIsPulsing(true);
+            const timer = setTimeout(() => setIsPulsing(false), 500);
+            return () => clearTimeout(timer);
+        }
+    }, [totalItems]);
 
     return (
         <header style={navStyle}>
@@ -52,14 +58,13 @@ const Header = () => {
                             <li className="nav-item"><Link className="nav-link" to="/contacto">Contacto</Link></li>
                             
                             <li className="nav-item">
-                                <Link className="nav-link" to="/carrito" style={linkStyle}
+                                <Link className={`nav-link ${isPulsing ? 'cart-icon-pulse' : ''}`} to="/carrito" style={linkStyle}
                                     onMouseOver={(e) => e.currentTarget.style.color = linkHoverStyle.color}
                                     onMouseOut={(e) => e.currentTarget.style.color = linkStyle.color}
                                 >
                                     <FontAwesomeIcon icon={faShoppingCart} /> Carrito ({totalItems})
                                 </Link>
                             </li>
-
                             {isAuthenticated ? (
                                 <>
                                     <li className="nav-item">
