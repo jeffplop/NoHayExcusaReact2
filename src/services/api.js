@@ -1,6 +1,8 @@
-import PRODUCTS_DATA from '../data/products.json';
+import axios from 'axios';
 
-const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 300)); 
+const API_URL = 'http://localhost:8080/api';
+
+const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 300));
 
 const getLocalData = (key, defaultValue = {}) => {
     try {
@@ -34,7 +36,7 @@ export const loginUser = async (email, password) => {
     const user = users[email];
 
     if (user && user.password === password) {
-        localStorage.setItem('authToken', 'local_token'); 
+        localStorage.setItem('authToken', 'local_token');
         localStorage.setItem('userEmail', email);
 
         return { success: true, message: "Inicio de sesión exitoso.", user: { email } };
@@ -44,8 +46,13 @@ export const loginUser = async (email, password) => {
 };
 
 export const getProducts = async () => {
-    await simulateDelay();
-    return PRODUCTS_DATA;
+    try {
+        const response = await axios.get(`${API_URL}/products`);
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener productos del backend:", error);
+        return [];
+    }
 };
 
 export const getCart = async () => {
@@ -54,8 +61,17 @@ export const getCart = async () => {
     const carts = getLocalData('carts', {});
     const localCart = carts[currentUserEmail] || [];
 
+    if (localCart.length === 0) {
+        return [];
+    }
+
+    const allProducts = await getProducts();
+    if (!allProducts || allProducts.length === 0) {
+        return [];
+    }
+
     const enrichedCart = localCart.map(cartItem => {
-        const productDetails = PRODUCTS_DATA.find(p => p.id === cartItem.id);
+        const productDetails = allProducts.find(p => p.id === cartItem.id);
         
         if (productDetails) {
             return {
@@ -74,18 +90,13 @@ export const addToCart = async (productId) => {
     const currentUserEmail = localStorage.getItem('userEmail') || 'guest';
     let carts = getLocalData('carts', {});
     let cart = carts[currentUserEmail] || [];
-    const product = PRODUCTS_DATA.find(p => p.id === productId);
-
-    if (!product) {
-        return { success: false, message: "Producto no encontrado." };
-    }
 
     const itemIndex = cart.findIndex(item => item.id === productId);
 
     if (itemIndex > -1) {
         cart[itemIndex].cantidad += 1;
     } else {
-        cart.push({ id: product.id, cantidad: 1 }); 
+        cart.push({ id: productId, cantidad: 1 });
     }
 
     carts[currentUserEmail] = cart;

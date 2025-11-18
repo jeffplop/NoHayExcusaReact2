@@ -2,28 +2,32 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import newsData from '../data/news.json'; 
 
-const ProjectCard = ({ title, description, techs, demoLink }) => (
-    <Card className="mb-4 h-100 shadow-sm" bg="dark" text="white" border="danger">
-        <Card.Body>
-            <Card.Title>{title}</Card.Title>
-            <Card.Text>{description}</Card.Text>
-        </Card.Body>
-        <Card.Footer className="bg-secondary text-white-50">
-            <small>Tecnologías: {techs}</small>
-            <Button variant="outline-light" size="sm" href={demoLink} target="_blank" className="float-end">
-                Ver
-            </Button>
-        </Card.Footer>
-    </Card>
-);
+const ProjectCard = ({ title, description, techs, demoLink }) => {
+    return (
+        <Card className="mb-4 h-100 shadow-sm" bg="dark" text="white" border="danger">
+            <Card.Body>
+                <Card.Title>{title}</Card.Title>
+                <Card.Text>{description}</Card.Text>
+            </Card.Body>
+            <Card.Footer className="bg-secondary text-white-50">
+                <small>Tecnologías: {techs}</small>
+                <Button variant="outline-light" size="sm" href={demoLink} target="_blank" className="float-end">
+                    Ver
+                </Button>
+            </Card.Footer>
+        </Card>
+    );
+};
 
-const NewsItem = ({ title, date, content }) => (
-    <div className="mb-4 p-3 border-start border-4 border-danger bg-light text-dark shadow-sm">
-        <h5>{title}</h5>
-        <p className="text-muted small mb-1">{date}</p>
-        <p>{content}</p>
-    </div>
-);
+const NewsItem = ({ title, date, content }) => {
+    return (
+        <div className="mb-4 p-3 border-start border-4 border-danger bg-light text-dark shadow-sm">
+            <h5>{title}</h5>
+            <p className="text-muted small mb-1">{date}</p>
+            <p>{content}</p>
+        </div>
+    );
+};
 
 const AboutUs = () => {
     const [news] = useState(newsData); 
@@ -32,7 +36,7 @@ const AboutUs = () => {
             id: 1,
             title: 'NOHAYEXCUSA.CL (E-commerce)',
             description: 'Plataforma de comercio electrónico con autenticación y carrito persistente.',
-            techs: 'React, Node.js (Express), Bootstrap',
+            techs: 'React, Spring Boot, MySQL',
             demoLink: '#' 
         },
         {
@@ -64,7 +68,7 @@ const AboutUs = () => {
                         />
                         <h1 className="display-4 text-danger">¡Hola Soy Jeff!</h1>
                         <p className="lead">
-                            Estudiante de Ingenería en Informatica | Me gusta arruinar mi felicidad y vivir con angustía
+                            Estudiante de Ingeniería en Informática | Me gusta arruinar mi felicidad y vivir con angustia
                         </p>
                     </Col>
                 </Row>
@@ -72,7 +76,12 @@ const AboutUs = () => {
                 <Row xs={1} md={2} lg={3} className="g-4">
                     {projects.map(project => (
                         <Col key={project.id}>
-                            <ProjectCard {...project} />
+                            <ProjectCard 
+                                title={project.title} 
+                                description={project.description} 
+                                techs={project.techs} 
+                                demoLink={project.demoLink} 
+                            />
                         </Col>
                     ))}
                 </Row>

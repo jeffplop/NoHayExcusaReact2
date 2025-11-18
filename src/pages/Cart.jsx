@@ -1,34 +1,10 @@
 import React from 'react';
 import { useAppContext } from '../context/Context';
 import { Container } from 'react-bootstrap';
+import CartItem from '../components/CartItem';
 
 const Cart = () => {
-    const { cart, totalItems, totalAmount, loadingCart, handleRemoveFromCart, handleCheckout } = useAppContext();
-    const CartItem = ({ item }) => {
-        const imgPath = item.imagen; 
-        
-        return (
-            <div className="cart-item d-flex align-items-center mb-3 p-3 border rounded shadow-sm bg-dark">
-                <img 
-                    src={imgPath} 
-                    alt={`Imagen de ${item.nombre}`} 
-                    className="me-3" 
-                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }}
-                />
-                <div className="flex-grow-1 text-white text-start">
-                    <h5 className="mb-0 text-danger">{item.nombre}</h5>
-                    <p className="mb-0">Precio unitario: ${item.precio.toLocaleString('es-CL')}</p>
-                    <p className="mb-0">Cantidad: {item.cantidad}</p>
-                </div>
-                <button
-                    className="btn btn-sm btn-outline-danger ms-3"
-                    onClick={() => handleRemoveFromCart(item.id)}
-                >
-                    Eliminar
-                </button>
-            </div>
-        );
-    };
+    const { cart, totalItems, totalAmount, loadingCart, handleCheckout } = useAppContext();
 
     if (loadingCart) {
         return <main className="container my-5 text-center"><p className="text-white">Cargando carrito...</p></main>;

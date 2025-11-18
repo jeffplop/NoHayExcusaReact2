@@ -1,0 +1,29 @@
+.product-card .add-to-cart-animate {
+    animation: pulse-success 0.5s ease-out forwards;
+}
+
+@keyframes pulse-success {
+    0% {
+        transform: scale(1);
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    50% {
+        transform: scale(1.05);
+        background-color: #198754;
+        border-color: #198754;
+    }
+    100% {
+        transform: scale(1);
+        background-color: #198754;
+        border-color: #198754;
+    }
+}
+
+.product-card .product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background-color: #fff;
+    padding: 10px;
+}

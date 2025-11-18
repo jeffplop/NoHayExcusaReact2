@@ -1,16 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-    const [offsetY, setOffsetY] = useState(0);
-    const handleScroll = () => {
-        setOffsetY(window.pageYOffset);
-    };
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     const heroContainerStyle = {
         textAlign: 'center',
@@ -19,15 +10,8 @@ const Home = () => {
         zIndex: 2,
     };
 
-    const contentParallaxStyle = {
-        transform: `translateY(${offsetY * 0.15}px)`,
-        transition: 'transform 0.1s ease-out',
-        willChange: 'transform',
-    };
-
     const backgroundParallaxStyle = {
         backgroundImage: `url(${process.env.PUBLIC_URL}/images/banner.jpg)`,
-        transform: `translateY(${offsetY * 0}px)` 
     };
 
     return (
@@ -38,7 +22,7 @@ const Home = () => {
                 ></div>
                 
                 <div className="parallax-content" style={heroContainerStyle}>
-                    <div className="hero-content" style={contentParallaxStyle}>
+                    <div className="hero-content">
                         <h2 className="display-4" style={{ marginBottom: '1rem', color: '#e53935' }}>
                             No hay excusas, empieza hoy tu transformación
                         </h2>
