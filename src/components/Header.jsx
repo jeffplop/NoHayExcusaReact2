@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faUserShield, faCashRegister } from '@fortawesome/free-solid-svg-icons';
 import { useAppContext } from '../context/Context';
 
 const Header = () => {
-    const { isAuthenticated, currentUserEmail, totalItems, handleLogout } = useAppContext();
+    const { isAuthenticated, currentUserEmail, currentUserRole, totalItems, handleLogout } = useAppContext();
     const navigate = useNavigate();
     const [isPulsing, setIsPulsing] = useState(false);
+    
     const onLogout = () => {
         handleLogout();
         navigate('/');
     };
+    
     const logoPath = `${process.env.PUBLIC_URL}/images/logo.jpg`;
     const navStyle = {
         backgroundColor: '#000',
@@ -39,15 +41,7 @@ const Header = () => {
                     <Link className="navbar-brand" to="/">
                         <img src={logoPath} alt="Logo de NOHAYEXCUSA.CL" style={logoStyle} />
                     </Link>
-                    <button 
-                        className="navbar-toggler" 
-                        type="button" 
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#navbarNav" 
-                        aria-controls="navbarNav" 
-                        aria-expanded="false" 
-                        aria-label="Toggle navigation"
-                    >
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -55,6 +49,23 @@ const Header = () => {
                             <li className="nav-item"><Link className="nav-link" to="/">Inicio</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/nosotros">Quiénes somos</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/productos">Productos</Link></li>
+                            
+                            {currentUserRole === 'ADMINISTRADOR' && (
+                                <li className="nav-item">
+                                    <Link className="nav-link text-warning" to="/admin">
+                                        <FontAwesomeIcon icon={faUserShield} /> Admin
+                                    </Link>
+                                </li>
+                            )}
+
+                            {currentUserRole === 'VENDEDOR' && (
+                                <li className="nav-item">
+                                    <Link className="nav-link text-info" to="/vendedor">
+                                        <FontAwesomeIcon icon={faCashRegister} /> Ventas
+                                    </Link>
+                                </li>
+                            )}
+
                             <li className="nav-item"><Link className="nav-link" to="/contacto">Contacto</Link></li>
                             
                             <li className="nav-item">

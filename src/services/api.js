@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api';
+const API_URL = 'http://localhost:8080/api/v1';
 
 const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 300));
 
@@ -17,37 +17,34 @@ const setLocalData = (key, data) => {
 };
 
 export const registerUser = async (userData) => {
-    await simulateDelay();
-    let users = getLocalData('users', {});
-
-    if (users[userData.email]) {
-        return { success: false, message: "El correo electrónico ya está registrado." };
+    try {
+        const response = await axios.post(`${API_URL}/auth/register`, userData);
+        return { success: true, message: "Registro exitoso.", user: response.data };
+    } catch (error) {
+        console.error("Error en registro:", error);
+        return { success: false, message: error.response?.data || "Error al registrar usuario." };
     }
-
-    users[userData.email] = userData;
-    setLocalData('users', users);
-
-    return { success: true, message: "Registro exitoso.", user: { email: userData.email } };
 };
 
 export const loginUser = async (email, password) => {
-    await simulateDelay();
-    const users = getLocalData('users', {});
-    const user = users[email];
-
-    if (user && user.password === password) {
-        localStorage.setItem('authToken', 'local_token');
-        localStorage.setItem('userEmail', email);
-
-        return { success: true, message: "Inicio de sesión exitoso.", user: { email } };
-    } else {
+    try {
+        const response = await axios.post(`${API_URL}/auth/login`, { email, password });
+        if (response.data.success) {
+            localStorage.setItem('authToken', 'backend_token_dummy');
+            localStorage.setItem('userEmail', response.data.user.email);
+            localStorage.setItem('userRole', response.data.user.role);
+            return { success: true, message: "Inicio de sesión exitoso.", user: response.data.user };
+        }
+    } catch (error) {
+        console.error("Error en login:", error);
         return { success: false, message: "Credenciales incorrectas." };
     }
+    return { success: false, message: "Error inesperado." };
 };
 
 export const getProducts = async () => {
     try {
-        const response = await axios.get(`${API_URL}/products`);
+        const response = await axios.get(`${API_URL}/productos`);
         return response.data;
     } catch (error) {
         console.error("Error al obtener productos del backend:", error);

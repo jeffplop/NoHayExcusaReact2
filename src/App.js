@@ -10,6 +10,7 @@ import Contact from './pages/Contact';
 import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Admin from './pages/Admin';
 import { AppProvider } from './context/Context';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/global.css'; 
@@ -33,6 +34,7 @@ const RouteWrapper = () => {
                         <Route path="/carrito" element={<Cart />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/admin" element={<Admin />} />
                         <Route path="*" element={<main className="container my-5 text-center text-danger"><h2>404: Página no encontrada</h2></main>} />
                     </Routes>
                 </div>
@@ -44,7 +46,7 @@ const RouteWrapper = () => {
 function App() {
     return (
         <AppProvider>
-            <Router>
+            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <div className="d-flex flex-column min-vh-100 bg-black">
                     <Header />
                     <div className="flex-grow-1">

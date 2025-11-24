@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getCart, addToCart, removeFromCart, checkoutCart, loginUser } from '../services/api';
+
 const AppContext = createContext();
 
 export const useAppContext = () => useContext(AppContext);
@@ -7,19 +8,30 @@ export const useAppContext = () => useContext(AppContext);
 export const AppProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [currentUserEmail, setCurrentUserEmail] = useState(null);
+    const [currentUserRole, setCurrentUserRole] = useState(null);
     const [cart, setCart] = useState([]);
     const [loadingCart, setLoadingCart] = useState(true);
+
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         const email = localStorage.getItem('userEmail');
+        const role = localStorage.getItem('userRole');
         
         if (token && email) {
             setIsAuthenticated(true);
             setCurrentUserEmail(email);
+            setCurrentUserRole(role);
         }
     }, []);
+
     useEffect(() => {
         const fetchCart = async () => {
+            if (!isAuthenticated) {
+                setCart([]);
+                setLoadingCart(false);
+                return;
+            }
+            
             setLoadingCart(true);
             try {
                 const fetchedCart = await getCart();
@@ -40,14 +52,18 @@ export const AppProvider = ({ children }) => {
         if (result.success) {
             setIsAuthenticated(true);
             setCurrentUserEmail(result.user.email);
+            setCurrentUserRole(result.user.role);
         }
         return result;
     };
+
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userEmail');
+        localStorage.removeItem('userRole');
         setIsAuthenticated(false);
         setCurrentUserEmail(null);
+        setCurrentUserRole(null);
         setCart([]);
     };
 
@@ -74,6 +90,7 @@ export const AppProvider = ({ children }) => {
             return { message: "Error al eliminar el producto." };
         }
     };
+
     const handleCheckout = async () => {
         const result = await checkoutCart();
         if (result.success) {
@@ -90,6 +107,7 @@ export const AppProvider = ({ children }) => {
             value={{
                 isAuthenticated,
                 currentUserEmail,
+                currentUserRole,
                 cart,
                 totalItems,
                 totalAmount,
