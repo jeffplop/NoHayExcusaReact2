@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Header from './components/Header';
@@ -11,21 +11,24 @@ import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Admin from './pages/Admin';
+import Vendedor from './pages/Vendedor';
 import { AppProvider } from './context/Context';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/global.css'; 
 
 const RouteWrapper = () => {
     const location = useLocation();
+    const nodeRef = useRef(null);
 
     return (
         <SwitchTransition>
             <CSSTransition
                 key={location.pathname}
+                nodeRef={nodeRef}
                 classNames="page-transition"
                 timeout={300}
             >
-                <div className="position-relative w-100 h-100">
+                <div ref={nodeRef} className="position-relative w-100 h-100">
                     <Routes location={location}>
                         <Route path="/" element={<Home />} />
                         <Route path="/nosotros" element={<AboutUs />} />
@@ -35,6 +38,8 @@ const RouteWrapper = () => {
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/admin" element={<Admin />} />
+                        <Route path="/vendedor" element={<Vendedor />} />
+                        
                         <Route path="*" element={<main className="container my-5 text-center text-danger"><h2>404: Página no encontrada</h2></main>} />
                     </Routes>
                 </div>

@@ -1,114 +1,77 @@
 import React, { useState } from 'react';
+import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane, faEnvelope, faPhone, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Contact = () => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-    const [errors, setErrors] = useState({});
-    const [successMessage, setSuccessMessage] = useState('');
-
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const validateForm = () => {
-        const newErrors = {};
-        let valid = true;
-        
-        if (!formData.name) {
-            newErrors.name = 'El nombre es requerido.';
-            valid = false;
-        } else if (formData.name.length > 100) {
-            newErrors.name = 'El nombre no puede exceder los 100 caracteres.';
-            valid = false;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
-        if (!formData.email) {
-            newErrors.email = 'El correo electrónico es requerido.';
-            valid = false;
-        } else if (!emailRegex.test(formData.email)) {
-            newErrors.email = 'Formato de correo electrónico inválido.';
-            valid = false;
-        } else if (formData.email.length > 100) {
-            newErrors.email = 'El correo electrónico no puede exceder los 100 caracteres.';
-            valid = false;
-        }
-
-        if (!formData.message) {
-            newErrors.message = 'El mensaje es requerido.';
-            valid = false;
-        } else if (formData.message.length > 500) {
-            newErrors.message = 'El mensaje no puede exceder los 500 caracteres.';
-            valid = false;
-        }
-
-        setErrors(newErrors);
-        setSuccessMessage('');
-        return valid;
-    };
-
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
-        if (validateForm()) {
-            setSuccessMessage('¡Mensaje enviado con éxito!');
-            setFormData({ name: '', email: '', message: '' });
-            setTimeout(() => setSuccessMessage(''), 3000);
-        }
+        setSuccess(true);
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setSuccess(false), 3000);
     };
-    const formContainerStyle = {
-        maxWidth: '500px',
-        margin: '2rem auto',
-        backgroundColor: '#333',
-        padding: '2rem',
-        borderRadius: '10px',
-        textAlign: 'left',
-        color: '#fff',
-    };
-
-    const inputStyle = { backgroundColor: '#222', color: '#fff', borderColor: '#555' };
-    const errorStyle = { color: '#e53935', fontSize: '0.875rem', display: 'block', marginTop: '0.25rem' };
-
 
     return (
-        <main>
-            <section id="contacto" className="container my-5 text-center">
-                <h2 className="text-danger">Contacto</h2>
-                <p className="text-white-50">¿Tienes alguna pregunta? Envíanos un mensaje y te responderemos a la brevedad.</p>
-                
-                <div className="form-container" style={formContainerStyle}>
-                    <form id="contactForm" onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label htmlFor="contact-name" className="form-label">Nombre:</label>
-                            <input type="text" className="form-control" id="contact-name" name="name" value={formData.name} onChange={handleInputChange} style={inputStyle} />
-                            {errors.name && <span style={errorStyle}>{errors.name}</span>}
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="contact-email" className="form-label">Correo Electrónico:</label>
-                            <input type="email" className="form-control" id="contact-email" name="email" value={formData.email} onChange={handleInputChange} style={inputStyle} />
-                            {errors.email && <span style={errorStyle}>{errors.email}</span>}
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="contact-message" className="form-label">Mensaje:</label>
-                            <textarea className="form-control" id="contact-message" name="message" rows="5" value={formData.message} onChange={handleInputChange} style={inputStyle}></textarea>
-                            {errors.message && <span style={errorStyle}>{errors.message}</span>}
-                        </div>
-                        
-                        {successMessage && (
-                            <div className="alert alert-success text-center fw-bold" 
-                                role="alert" 
-                                style={{ backgroundColor: '#4CAF50', color: 'white' }}
-                            >
-                                {successMessage}
-                            </div>
-                        )}
-
-                        <button type="submit" className="btn btn-danger w-100 mt-3" style={{ backgroundColor: '#e53935', borderColor: '#e53935', fontWeight: 700 }}>
-                            Enviar Mensaje
-                        </button>
-                    </form>
+        <main className="bg-black min-vh-100 py-5">
+            <Container>
+                <div className="text-center mb-5">
+                    <h1 className="display-4 fw-bold text-white text-uppercase">Contáctanos</h1>
+                    <p className="lead text-white-50">Estamos aquí para ayudarte en tu proceso de transformación.</p>
                 </div>
-            </section>
+
+                <Row className="justify-content-center g-4">
+                    {/* Información de Contacto */}
+                    <Col lg={4}>
+                        <Card className="h-100 bg-dark border-secondary text-white shadow">
+                            <Card.Body className="p-4 d-flex flex-column justify-content-center">
+                                <div className="d-flex align-items-center mb-4">
+                                    <div className="bg-danger rounded-circle p-3 me-3"><FontAwesomeIcon icon={faEnvelope} size="lg" /></div>
+                                    <div><h5 className="mb-0">Email</h5><p className="mb-0 text-white-50">contacto@nohayexcusa.cl</p></div>
+                                </div>
+                                <div className="d-flex align-items-center mb-4">
+                                    <div className="bg-danger rounded-circle p-3 me-3"><FontAwesomeIcon icon={faPhone} size="lg" /></div>
+                                    <div><h5 className="mb-0">Teléfono</h5><p className="mb-0 text-white-50">+56 9 1234 5678</p></div>
+                                </div>
+                                <div className="d-flex align-items-center">
+                                    <div className="bg-danger rounded-circle p-3 me-3"><FontAwesomeIcon icon={faMapMarkerAlt} size="lg" /></div>
+                                    <div><h5 className="mb-0">Ubicación</h5><p className="mb-0 text-white-50">Santiago, Chile</p></div>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                    {/* Formulario */}
+                    <Col lg={6}>
+                        <Card className="bg-dark border-secondary shadow">
+                            <Card.Body className="p-4">
+                                <h3 className="text-white mb-4">Envíanos un mensaje</h3>
+                                {success && <Alert variant="success" className="border-0 bg-success text-white">¡Mensaje enviado correctamente!</Alert>}
+                                
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="text-white">Tu Nombre</Form.Label>
+                                        <Form.Control type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="text-white">Tu Email</Form.Label>
+                                        <Form.Control type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                                    </Form.Group>
+                                    <Form.Group className="mb-4">
+                                        <Form.Label className="text-white">Mensaje</Form.Label>
+                                        <Form.Control as="textarea" rows={4} required value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} />
+                                    </Form.Group>
+                                    <Button variant="outline-light" type="submit" className="w-100 py-2 fw-bold">
+                                        <FontAwesomeIcon icon={faPaperPlane} className="me-2" /> ENVIAR
+                                    </Button>
+                                </Form>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </Container>
         </main>
     );
 };

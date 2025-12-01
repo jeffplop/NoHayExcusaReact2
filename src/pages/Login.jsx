@@ -1,98 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/Context';
+import { Container, Card, Form, Button, Alert, Spinner, InputGroup } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignInAlt, faUserPlus, faEye, faEyeSlash, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState({ text: '', type: '' });
+    const [showPassword, setShowPassword] = useState(false);
+    const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [emailValid, setEmailValid] = useState(null);
     const { handleLogin, isAuthenticated } = useAppContext();
     const navigate = useNavigate();
-    if (isAuthenticated) {
-        navigate('/');
-        return null;
-    }
+
+    useEffect(() => {
+        if (isAuthenticated) navigate('/');
+    }, [isAuthenticated, navigate]);
+
+    const validateEmail = (val) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setEmailValid(regex.test(val));
+        setEmail(val);
+    };
+
+    if (isAuthenticated) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
         if (!email || !password) {
-            setMessage({ text: 'Completa todos los campos.', type: 'error' });
+            setMessage({ text: 'Por favor completa todos los campos.', type: 'warning' });
             return;
         }
 
-        setMessage({ text: 'Iniciando sesión...', type: 'info' });
+        setLoading(true);
+        setMessage(null);
         
         const result = await handleLogin(email, password);
+        setLoading(false);
         
         if (result.success) {
-            setMessage({ text: 'Iniciando sesión...', type: 'success' });
-            setTimeout(() => {
-                navigate('/');
-            }, 1000);
+            navigate('/');
         } else {
-            setMessage({ text: result.message, type: 'error' });
+            setMessage({ text: result.message, type: 'danger' });
         }
-    };
-    const formContainerStyle = {
-        maxWidth: '500px',
-        margin: '2rem auto',
-        backgroundColor: '#333',
-        padding: '2rem',
-        borderRadius: '10px',
-        textAlign: 'left',
-        color: '#fff',
     };
 
     return (
-        <main>
-            <div className="form-container" style={formContainerStyle}>
-                <h2 className="text-center text-danger mb-4">Iniciar sesión</h2>
-                <form id="loginForm" onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="login-email" className="form-label">E-mail</label>
-                        <input 
-                            type="email" 
-                            className="form-control" 
-                            id="login-email" 
-                            value={email} 
-                            onChange={(e) => setEmail(e.target.value)} 
-                            required 
-                            style={{ backgroundColor: '#222', color: '#fff', borderColor: '#555' }}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="login-password" className="form-label">Contraseña</label>
-                        <input 
-                            type="password" 
-                            className="form-control" 
-                            id="login-password" 
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)} 
-                            required 
-                            style={{ backgroundColor: '#222', color: '#fff', borderColor: '#555' }}
-                        />
-                    </div>
-                    
-                    {message.text && (
-                        <div className={`alert text-center fw-bold ${message.type === 'error' ? 'alert-danger' : 'alert-success'}`} 
-                            role="alert" 
-                            style={{ backgroundColor: message.type === 'error' ? '#e53935' : '#4CAF50', color: 'white' }}
-                        >
-                            {message.text}
+        <main className="d-flex align-items-center min-vh-100 bg-black" style={{ marginTop: '-80px' }}>
+            <Container className="d-flex justify-content-center">
+                <Card className="p-4 shadow-lg border-0 rounded-4" style={{ width: '100%', maxWidth: '450px', backgroundColor: '#1a1a1a' }}>
+                    <Card.Body>
+                        <div className="text-center mb-4">
+                            <h2 className="text-white fw-bold mb-1">Bienvenido</h2>
+                            <p className="text-white-50">Ingresa a tu cuenta para continuar</p>
                         </div>
-                    )}
-                    
-                    <button type="submit" className="btn btn-danger w-100 mt-3" style={{ backgroundColor: '#e53935', borderColor: '#e53935', fontSize: '1.1rem', fontWeight: 700 }}>
-                        Iniciar sesión
-                    </button>
-                </form>
-                
-                <hr style={{ border: 0, borderTop: '1px solid #444', margin: '30px 0 15px' }} />
-                <p style={{ textAlign: 'center', color: '#ccc' }}>
-                    ¿Eres un usuario nuevo? <Link to="/register" style={{ color: '#e53935', textDecoration: 'none', fontWeight: 700 }}>Crear cuenta</Link>
-                </p>
-            </div>
+
+                        {message && <Alert variant={message.type} className="text-center border-0 small">{message.text}</Alert>}
+
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group className="mb-3 position-relative">
+                                <Form.Label className="text-white-50 small">CORREO ELECTRÓNICO</Form.Label>
+                                <InputGroup hasValidation>
+                                    <Form.Control 
+                                        type="email" 
+                                        placeholder="nombre@ejemplo.com"
+                                        value={email} 
+                                        onChange={(e) => validateEmail(e.target.value)} 
+                                        className="rounded-3 px-4"
+                                        isValid={emailValid === true}
+                                        isInvalid={emailValid === false && email.length > 0}
+                                    />
+                                    <Form.Control.Feedback type="invalid" tooltip>
+                                        Ingresa un correo válido.
+                                    </Form.Control.Feedback>
+                                </InputGroup>
+                            </Form.Group>
+
+                            <Form.Group className="mb-4">
+                                <Form.Label className="text-white-50 small">CONTRASEÑA</Form.Label>
+                                <InputGroup>
+                                    <Form.Control 
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
+                                        value={password} 
+                                        onChange={(e) => setPassword(e.target.value)} 
+                                        className="rounded-start-3 px-4 border-end-0"
+                                    />
+                                    <Button 
+                                        variant="outline-secondary"
+                                        className="bg-dark text-white-50 border-start-0 border-secondary rounded-end-3"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                                    </Button>
+                                </InputGroup>
+                            </Form.Group>
+
+                            <Button 
+                                variant="danger" 
+                                type="submit" 
+                                className="w-100 rounded-pill py-2 fw-bold shadow"
+                                disabled={loading || emailValid === false}
+                                style={{ background: 'linear-gradient(45deg, #e53935, #ff9800)', border: 'none' }}
+                            >
+                                {loading ? <Spinner size="sm" animation="border" /> : <><FontAwesomeIcon icon={faSignInAlt} /> INICIAR SESIÓN</>}
+                            </Button>
+                        </Form>
+
+                        <div className="text-center mt-4 pt-3 border-top border-secondary">
+                            <p className="text-white-50 mb-0 small">¿Aún no tienes cuenta?</p>
+                            <Link to="/register" className="text-decoration-none text-warning fw-bold">
+                                <FontAwesomeIcon icon={faUserPlus} /> Crear cuenta gratis
+                            </Link>
+                        </div>
+                    </Card.Body>
+                </Card>
+            </Container>
         </main>
     );
 };

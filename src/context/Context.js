@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getCart, addToCart, removeFromCart, checkoutCart, loginUser } from '../services/api';
+import { getCart, addToCart, removeFromCart, updateCartItem, checkoutCart, loginUser } from '../services/api';
 
 const AppContext = createContext();
 
@@ -37,7 +37,6 @@ export const AppProvider = ({ children }) => {
                 const fetchedCart = await getCart();
                 setCart(fetchedCart || []); 
             } catch (error) {
-                console.error("Error al cargar el carrito:", error);
                 setCart([]);
             } finally {
                 setLoadingCart(false);
@@ -67,15 +66,24 @@ export const AppProvider = ({ children }) => {
         setCart([]);
     };
 
-    const handleAddToCart = async (productId) => {
+    const handleAddToCart = async (productId, quantity = 1) => {
         try {
-            const result = await addToCart(productId);
+            const result = await addToCart(productId, quantity);
             const fetchedCart = await getCart();
             setCart(fetchedCart);
             return result;
         } catch (error) {
-            console.error("Error al añadir al carrito:", error);
             return { message: "Error al añadir el producto." };
+        }
+    };
+
+    const handleUpdateQuantity = async (productId, newQuantity) => {
+        try {
+            await updateCartItem(productId, newQuantity);
+            const fetchedCart = await getCart();
+            setCart(fetchedCart);
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -86,9 +94,16 @@ export const AppProvider = ({ children }) => {
             setCart(fetchedCart);
             return result;
         } catch (error) {
-            console.error("Error al eliminar del carrito:", error);
             return { message: "Error al eliminar el producto." };
         }
+    };
+
+    const handleClearCart = async () => {
+        for (const item of cart) {
+             await removeFromCart(item.id);
+        }
+        setCart([]);
+        return { success: true };
     };
 
     const handleCheckout = async () => {
@@ -100,7 +115,22 @@ export const AppProvider = ({ children }) => {
     };
 
     const totalItems = (cart || []).reduce((total, item) => total + item.cantidad, 0);
-    const totalAmount = (cart || []).reduce((total, item) => total + (item.precio * item.cantidad), 0);
+    
+    const totalAmount = (cart || []).reduce((total, item) => {
+        let price = item.precio;
+        if (item.descuento && item.descuento > 0) {
+            price = price - (price * item.descuento / 100);
+        }
+        return total + (price * item.cantidad);
+    }, 0);
+
+    const totalSavings = (cart || []).reduce((total, item) => {
+        if (item.descuento && item.descuento > 0) {
+            const savingPerUnit = item.precio * item.descuento / 100;
+            return total + (savingPerUnit * item.cantidad);
+        }
+        return total;
+    }, 0);
     
     return (
         <AppContext.Provider 
@@ -111,11 +141,14 @@ export const AppProvider = ({ children }) => {
                 cart,
                 totalItems,
                 totalAmount,
+                totalSavings,
                 loadingCart,
                 handleLogin,
                 handleLogout,
                 handleAddToCart,
+                handleUpdateQuantity,
                 handleRemoveFromCart,
+                handleClearCart,
                 handleCheckout
             }}
         >

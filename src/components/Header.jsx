@@ -50,18 +50,18 @@ const Header = () => {
                             <li className="nav-item"><Link className="nav-link" to="/nosotros">Quiénes somos</Link></li>
                             <li className="nav-item"><Link className="nav-link" to="/productos">Productos</Link></li>
                             
-                            {currentUserRole === 'ADMINISTRADOR' && (
+                            {(currentUserRole === 'ADMINISTRADOR' || currentUserRole === 'VENDEDOR') && (
                                 <li className="nav-item">
-                                    <Link className="nav-link text-warning" to="/admin">
-                                        <FontAwesomeIcon icon={faUserShield} /> Admin
+                                    <Link className="nav-link text-info" to="/vendedor">
+                                        <FontAwesomeIcon icon={faCashRegister} /> Ventas
                                     </Link>
                                 </li>
                             )}
 
-                            {currentUserRole === 'VENDEDOR' && (
+                            {currentUserRole === 'ADMINISTRADOR' && (
                                 <li className="nav-item">
-                                    <Link className="nav-link text-info" to="/vendedor">
-                                        <FontAwesomeIcon icon={faCashRegister} /> Ventas
+                                    <Link className="nav-link text-warning" to="/admin">
+                                        <FontAwesomeIcon icon={faUserShield} /> Admin
                                     </Link>
                                 </li>
                             )}
